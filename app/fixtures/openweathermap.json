@@ -1,0 +1,140 @@
+{
+    "city": {
+        "id": 5106184,
+        "name": "Weehawken",
+        "coord": {
+            "lon": -74.0205,
+            "lat": 40.7696
+        },
+        "country": "US",
+        "population": 14104
+    },
+    "cod": "200",
+    "message": 43.2098034,
+    "cnt": 5,
+    "list": [
+        {
+            "dt": 1510848000,
+            "temp": {
+                "day": 283.47,
+                "min": 280.65,
+                "max": 284.19,
+                "night": 280.65,
+                "eve": 283.46,
+                "morn": 283.84
+            },
+            "pressure": 1020.56,
+            "humidity": 100,
+            "weather": [
+                {
+                    "id": 501,
+                    "main": "Rain",
+                    "description": "moderate rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 3.45,
+            "deg": 259,
+            "clouds": 12,
+            "rain": 4.63
+        },
+        {
+            "dt": 1510934400,
+            "temp": {
+                "day": 279.45,
+                "min": 275.91,
+                "max": 281.45,
+                "night": 275.91,
+                "eve": 281.29,
+                "morn": 279.16
+            },
+            "pressure": 1028,
+            "humidity": 88,
+            "weather": [
+                {
+                    "id": 800,
+                    "main": "Clear",
+                    "description": "sky is clear",
+                    "icon": "01d"
+                }
+            ],
+            "speed": 5.73,
+            "deg": 320,
+            "clouds": 0
+        },
+        {
+            "dt": 1511020800,
+            "temp": {
+                "day": 281.48,
+                "min": 274.55,
+                "max": 283.69,
+                "night": 283.37,
+                "eve": 283.69,
+                "morn": 274.55
+            },
+            "pressure": 1022.84,
+            "humidity": 88,
+            "weather": [
+                {
+                    "id": 501,
+                    "main": "Rain",
+                    "description": "moderate rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 3.96,
+            "deg": 197,
+            "clouds": 88,
+            "rain": 3.34
+        },
+        {
+            "dt": 1511107200,
+            "temp": {
+                "day": 284.15,
+                "min": 276.22,
+                "max": 285.81,
+                "night": 276.22,
+                "eve": 280.14,
+                "morn": 285.81
+            },
+            "pressure": 993.88,
+            "humidity": 0,
+            "weather": [
+                {
+                    "id": 502,
+                    "main": "Rain",
+                    "description": "heavy intensity rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 4.75,
+            "deg": 274,
+            "clouds": 6,
+            "rain": 12.04
+        },
+        {
+            "dt": 1511193600,
+            "temp": {
+                "day": 279.98,
+                "min": 273.36,
+                "max": 279.98,
+                "night": 275.02,
+                "eve": 276.98,
+                "morn": 273.36
+            },
+            "pressure": 1006.09,
+            "humidity": 0,
+            "weather": [
+                {
+                    "id": 500,
+                    "main": "Rain",
+                    "description": "light rain",
+                    "icon": "10d"
+                }
+            ],
+            "speed": 2.08,
+            "deg": 305,
+            "clouds": 1
+        }
+    ]
+}

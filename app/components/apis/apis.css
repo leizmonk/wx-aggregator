@@ -1,0 +1,23 @@
+.forecast_grid {
+  list-style-type: none;
+  padding-left: 0px;
+
+  & li {
+    border: 1px solid #ddd;
+    display: inline-block;
+    min-width: 100px;
+    vertical-align: top;
+
+    & p {
+      margin: .5em .7em; 
+    }
+  }
+}
+
+.map_container {
+  height: 600px;  
+
+  & div:nth-child(2) {
+    height: 500px !important;
+  }
+}

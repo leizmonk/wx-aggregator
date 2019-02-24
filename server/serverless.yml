@@ -1,0 +1,48 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: wx-aggregator # NOTE: update this with your service name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+custom:
+  bucket: "wx-aggregator"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-west-2
+
+  environment:
+    awsRegion: ${file(./.env.yml):awsRegion}
+    awsIamRole: ${file(./.env.yml):awsIamRole}
+    awsIamKey: ${file(./.env.yml):awsIamKey}
+    awsIamSecret: ${file(./.env.yml):awsIamSecret}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+
+functions:
+  getDarkSkyWeatherAPIData:
+    handler: handler.getDarkSkyWeatherAPIData
+    environment:
+      BUCKET: "wx-aggregator"
+
+package:
+  exclude:
+    - aws-sdk
+    - .git/**

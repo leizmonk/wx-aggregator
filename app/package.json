@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "author": "Lei Zhao and Sze Chun Chan",
+  "name": "wx-aggregator",
+  "version": "0.0.1",
+  "description": "Weather forecast aggregator that averages data from weather APIs like Wunderground and Yahoo Weather.",
+  "license": "MIT",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "build": "preact build",
+    "serve": "preact build && preact serve",
+    "dev": "preact watch",
+    "lint": "eslint src"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-synacor"
+  },
+  "eslintIgnore": [
+    "build/*"
+  ],
+  "keywords": [
+    "weather",
+    "aggregator",
+    "serverless",
+    "aws",
+    "lambda",
+    "s3"
+  ],
+  "devDependencies": {
+    "autoprefixer": "^9.4.8",
+    "eslint": "^4.5.0",
+    "eslint-config-synacor": "^1.1.0",
+    "if-env": "^1.0.0",
+    "postcss-extend": "^1.0.5",
+    "postcss-import": "^12.0.1",
+    "postcss-mixins": "^6.2.1",
+    "postcss-nested": "^4.1.1",
+    "postcss-simple-vars": "^5.0.2",
+    "preact-cli": "^2.0.0",
+    "preact-cli-plugin-env-vars": "^1.2.1",
+    "preact-cli-postcss": "^1.1.1"
+  },
+  "dependencies": {
+    "google-maps-react": "^2.0.2",
+    "preact": "^8.2.1",
+    "postcss": "^7.0.14",
+    "preact-router": "^2.6.1",
+    "prop-types": "^15.6.2",
+    "preact-compat": "^3.17.0"
+  }
+}
