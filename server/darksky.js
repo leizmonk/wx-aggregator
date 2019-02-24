@@ -1,82 +1,99 @@
 "use strict";
 const https = require("https")
-const fs = require("fs")
 const AWS = require("aws-sdk")
 AWS.config.update({region:'us-west-2'})
 const Promise = require("bluebird")
 const lambda = new AWS.Lambda()
 const util = require("util")
+const inspect = util.inspect
 
 const s3 = new AWS.S3()
 const params = {params: {Bucket: "wx-aggregator", Key: "darkSkyWeatherData"}}
 
 module.exports.getDarkSkyWeatherAPIData = (event, context, callback) => {
-  const requestParameters = {
-    host: "api.darksky.net",
-    path: "/forecast/89433283494568b5b6820bc83be72d48/40.7536,-73.9893"
-  } 
-
+  // TODO: First, inspect event object and see where the zipcode and timestamp
+  console.log(`*** OBJECT CONTAINING ZIP CODE AND TIMESTAMP: ${inspect(event)} ***`)  
+  
   function fetchDarkSkyAPIData () {
     return new Promise((resolve, reject) => {
-      https.get(requestParameters, (res) => {
-        let payload = ''
-        res.on('data', (data) => {
-          payload += data
-          resolve(payload)
+      https.get(
+        {
+          host: "api.darksky.net",
+          path: "/forecast/" + process.env.PREACT_APP_DARKSKY_KEY + "/" + event.latLng
+        }, 
+        (res) => {
+          let payload = ''
+          res.on('data', (data) => {
+            payload += data
+            resolve(payload)
+          })
         })
-      })
     })
   }
-  
-function createNewJSONOfLatestWeatherDataInS3(s3Params, weatherJSONData) {
-  let putObjectParams = {
-    Bucket: "wx-aggregator",
-    Key: "forecastResults.json",
-    Body: weatherJSONData
-  }
 
-  // Promise.resolve(
-  //   fs.writeFile("/tmp/forecastResults.json", weatherJSONData, (file) => {
-  //     putObjectParams.Body = file
-  //   })
-  // )
-  // .then(() => {
-    console.log(`putObjectParams.body: ${putObjectParams.Body}`)
-    s3.putObject(putObjectParams, (err) => { 
-      if (err) {
-        console.log(`Error uploading weather API data to S3 json file: ${err}`)
-        throw err
-      } else {
-        console.log("Successfully uploaded latest weather data to JSON")
-      }
-    })
-  // })
-}
-
-  try {
-    fetchDarkSkyAPIData().then((weatherJSONData) => {
-      let s3Params = {
+  function createNewJSONOfLatestWeatherDataInS3(s3Params, weatherJSONData) {
+    console.log(`Fetched raw payload from external API: ${weatherJSONData}`)
+    s3.putObject(
+      {
         Bucket: "wx-aggregator",
         Key: "forecastResults.json",
         Body: weatherJSONData
-      }
-
-      return s3.getObject(params, (err, data) => {
+      }, 
+      (err) => {
         if (err) {
-          // weather data json file doesn"t exist, create it and write to it
-          createNewJSONOfLatestWeatherDataInS3(s3Params, weatherJSONData)
+          console.log(`Error uploading weather API data to S3 json file: ${err}`)
+          throw err
         } else {
-          console.log('Existing JSON detected. Deleting Old Weather Data...')
-          // deleteOutdatedWeatherDataFromS3Json(s3, s3Params).then(() => {
-            // Insert latest data in a new file on the s3 bucket
-            createNewJSONOfLatestWeatherDataInS3(s3Params, weatherJSONData)
-          // })
+          console.log("Successfully uploaded latest weather data to JSON")
         }
-      })
+      }
+    )
+  }
+
+  try {
+    fetchDarkSkyAPIData()
+      .then((weatherJSONData) => {
+        return s3.getObject(params, (err, data) => {
+          if (err) {
+            // weather data json file doesn"t exist, create it and write to it
+            createNewJSONOfLatestWeatherDataInS3(
+              {
+                Bucket: "wx-aggregator",
+                Key: "forecastResults.json",
+                Body: weatherJSONData
+              },
+              weatherJSONData)
+              let response = 
+              callback(null, {
+                statusCode: 200,
+                headers: {
+                  "x-custom-header" : "hey ma look no hands"
+                },
+                body: JSON.stringify(weatherJSONData)      
+              })
+          } else {
+            console.log('Existing JSON detected. Deleting Old Weather Data...')
+              // Insert latest data in a new file on the s3 bucket
+              createNewJSONOfLatestWeatherDataInS3(
+                {
+                  Bucket: "wx-aggregator",
+                  Key: "forecastResults.json",
+                  Body: weatherJSONData
+                },
+                weatherJSONData
+              )
+              callback(null, {
+                statusCode: 200,
+                headers: {
+                  "x-custom-header" : "hey ma look no hands"
+                },
+                body: JSON.stringify(weatherJSONData)      
+              });
+          }
+        })
     })
   }
   catch(err) {
     callback(err)
   }
-
 }

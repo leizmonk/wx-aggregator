@@ -1,5 +1,6 @@
 import { Component, h, render } from 'preact';
 import Router from 'preact-router';
+import AWS from 'aws-sdk';
 
 import Header from './components/header/header';
 import Home from './views/home/home';

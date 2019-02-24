@@ -15,6 +15,7 @@ class MapContainer extends Component {
     super(props);    
     this.state = {
       city: '',
+      latLng: '',
       state: '',
       zipCode: ''
     }
@@ -24,7 +25,7 @@ class MapContainer extends Component {
   // Wait for map ready and state update to send ZIP
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.google == this.props.google && zipRange.indexOf(this.state.zipCode) > -1) {
-      this.props.onSearchSubmit(this.state.zipCode, Date.now());
+      this.props.onSearchSubmit(this.state.latLng, this.state.zipCode, Date.now());
     } else if (prevProps.google != this.props.google) {
       console.log('Map loading...');
     } else {
@@ -60,6 +61,8 @@ class MapContainer extends Component {
             this.setState({zipCode: data[i].long_name});
           }
         }
+
+        this.setState({latLng: targetLat + ',' + targetLng})
       }
     });
   }
@@ -68,7 +71,7 @@ class MapContainer extends Component {
     return (
       <section class={styles.map_container}>
         <div class="search-form">
-          <p>Forecast for {this.state.city}, {this.state.state} {this.state.zipCode}</p>
+          <p>Forecast for {this.state.city}, {this.state.state} {this.state.zipCode} {this.state.latLng}</p>
         </div>
         <Map
           google={this.props.google}

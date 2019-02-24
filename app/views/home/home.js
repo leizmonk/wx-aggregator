@@ -19,6 +19,11 @@ const openWeatherData = require('../../fixtures/openweathermap.json');
 const weatherbitData = require('../../fixtures/weatherbit.json');
 const wundergroundData = require('../../fixtures/wunderground.json');
 
+const lambda = new AWS.Lambda({
+  region:'us-west-2',
+  accessKeyId: process.env.PREACT_APP_AWS_ACCESS_KEY_ID, 
+  secretAccessKey: process.env.PREACT_APP_AWS_SECRET_ACCESS_KEY
+});
 
 // Conversion functions
 // Converts Kelvin to Fahrenheit
@@ -241,8 +246,26 @@ class Home extends Component {
     console.log(this.state.nwsDaysForecast);
   }
 
-  onSearchSubmit(zipCode, time) {
-    console.log(zipCode, time);
+  onSearchSubmit(latLng, zipCode, time) {
+    // TODO: Hook this up to API Gateway/AWS Lambda
+    console.log(latLng, zipCode, time);
+    const payload = {
+      latLng: latLng,
+      zipCode: zipCode,
+      time: time
+    };
+
+    var params = {
+      FunctionName: 'arn:aws:lambda:us-west-2:444167711672:function:getDarkSkyWeatherAPIData', /* required */
+      ClientContext: AWS.util.base64.encode(JSON.stringify('WX-Aggregator')),
+      InvocationType: 'RequestResponse',
+      LogType: 'Tail',
+      Payload: JSON.stringify(payload) /* Strings will be Base-64 encoded on your behalf */,
+    };
+    lambda.invoke(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
+    });
   }
 
   render() {
