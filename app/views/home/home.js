@@ -25,6 +25,11 @@ const awsConfig = {
   secretAccessKey: process.env.PREACT_APP_AWS_SECRET_ACCESS_KEY  
 }
 
+const s3Params = {
+  Bucket: 'wx-aggregator',
+  Key: 'forecastResults.json',
+}
+
 const lambda = new AWS.Lambda(awsConfig);
 const s3 = new AWS.S3(awsConfig);
 
@@ -246,11 +251,6 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    const s3Params = {
-      Bucket: 'wx-aggregator',
-      Key: 'forecastResults.json',
-    }
-
     let getObjectPromise = s3.getObject(s3Params).promise();
 
     getObjectPromise.then(function(data) {
@@ -262,6 +262,7 @@ class Home extends Component {
       console.log(err, err.stack);
     }).then((darkSkyPayload) => {
       console.log(darkSkyPayload);
+      this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
     });
   }
 
