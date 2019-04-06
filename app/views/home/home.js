@@ -19,11 +19,19 @@ const openWeatherData = require('../../fixtures/openweathermap.json');
 const weatherbitData = require('../../fixtures/weatherbit.json');
 const wundergroundData = require('../../fixtures/wunderground.json');
 
-const lambda = new AWS.Lambda({
+const awsConfig = {
   region:'us-west-2',
   accessKeyId: process.env.PREACT_APP_AWS_ACCESS_KEY_ID, 
-  secretAccessKey: process.env.PREACT_APP_AWS_SECRET_ACCESS_KEY
-});
+  secretAccessKey: process.env.PREACT_APP_AWS_SECRET_ACCESS_KEY  
+}
+
+const s3Params = {
+  Bucket: 'wx-aggregator',
+  Key: 'forecastResults.json',
+}
+
+const lambda = new AWS.Lambda(awsConfig);
+const s3 = new AWS.S3(awsConfig);
 
 // Conversion functions
 // Converts Kelvin to Fahrenheit
@@ -240,6 +248,22 @@ class Home extends Component {
     this.state.weatherbitDaysForecast = weatherbitDataMassager(weatherbitData);
     this.state.wundergroundDaysForecast = wundergroundDataMassager(wundergroundData);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
+  }
+
+  componentWillMount() {
+    let getObjectPromise = s3.getObject(s3Params).promise();
+
+    getObjectPromise.then(function(data) {
+      const output = data.Body.toString();
+      const darkSkyPayload = JSON.parse(output);
+
+      return darkSkyPayload;
+    }).catch(function(err) {
+      console.log(err, err.stack);
+    }).then((darkSkyPayload) => {
+      console.log(darkSkyPayload);
+      this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
+    });
   }
 
   componentDidMount() {

@@ -71,7 +71,7 @@ class MapContainer extends Component {
     return (
       <section class={styles.map_container}>
         <div class="search-form">
-          <p>Forecast for {this.state.city}, {this.state.state} {this.state.zipCode} {this.state.latLng}</p>
+          <p>Forecast for {this.state.city}, {this.state.state} {this.state.zipCode}</p>
         </div>
         <Map
           google={this.props.google}
