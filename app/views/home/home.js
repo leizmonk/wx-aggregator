@@ -280,7 +280,7 @@ class Home extends Component {
     };
 
     var params = {
-      FunctionName: 'arn:aws:lambda:us-west-2:444167711672:function:getDarkSkyWeatherAPIData', /* required */
+      FunctionName: 'arn:aws:lambda:us-west-2:444167711672:function:wx-aggregator-serverless-dev-darkSkyApi', /* required */
       ClientContext: AWS.util.base64.encode(JSON.stringify('WX-Aggregator')),
       InvocationType: 'RequestResponse',
       LogType: 'Tail',
