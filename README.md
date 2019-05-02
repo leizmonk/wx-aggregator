@@ -77,5 +77,3 @@ X+------------------------------------------------+               |             
 AWS CLI
 Python 2 version 2.6.5+ or Python 3 version 3.3
 
-Once installed, contact project owner to obtain AWS keys
-
