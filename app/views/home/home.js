@@ -13,6 +13,7 @@ import WeatherUnderground from '../../components/apis/wunderground';
 
 const aerisData = require('../../fixtures/aeris.json');
 const apixuData = require('../../fixtures/apixu.json');
+const AWS = require("aws-sdk")
 const darkSkyData = require('../../fixtures/darksky.json');
 const nwsData = require('../../fixtures/nws-point.json');
 const openWeatherData = require('../../fixtures/openweathermap.json');
