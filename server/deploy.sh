@@ -1,20 +1,21 @@
 #! /bin/bash
 
-echo "----- deploy app to s3 bucket -----"
+echo "----- deploying app to s3 bucket -----"
 
 # remove existing app instance
-aws s3 rm s3://wx-aggregator/wx-aggregator-app --recursive --profile "wxaggregator"
+echo "----- removing stale app instance -----"
+aws s3 rm s3://wx-aggregator/ --recursive --profile "wxaggregator"
 
 # build the app
+echo "----- putting together new production build -----"
 cd ../app
 npm run build --no-prerender && mv build/ wx-aggregator-app/
 
 # sync with s3
-aws s3 sync wx-aggregator-app/ s3://wx-aggregator/wx-aggregator-app/ --acl public-read --profile "wxaggregator"
+echo "----- uploading current build to s3 -----"
+aws s3 sync wx-aggregator-app/ s3://wx-aggregator/ --acl public-read --profile "wxaggregator"
+
+echo "----- clearing local production build artifacts -----"
 # remove dup app dir
-mv wx-aggregator-app/ build/
-
-cd ..
-
-# To Do: 
-# Modify serverless IAM role to be able to create s3 objects for deploys
+cd ../app
+rm -rf wx-aggregator-app/ && rm -rf build/
