@@ -269,6 +269,7 @@ class Home extends Component {
 
   componentDidMount() {
     console.log(this.state.nwsDaysForecast);
+    console.log('did this deploy actually work? let\'s find out!');
   }
 
   onSearchSubmit(latLng, zipCode, time) {
