@@ -4,7 +4,7 @@ echo "----- deploying app to s3 bucket -----"
 
 # remove existing app instance
 echo "----- removing stale app instance -----"
-aws s3 rm s3://wx-aggregator/ --recursive --profile "wxaggregator"
+aws s3 rm s3://wx-aggregator/ --recursive --exclude 'forecast_data/*' --profile "wxaggregator"
 
 # build the app
 echo "----- putting together new production build -----"

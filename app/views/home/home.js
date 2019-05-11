@@ -14,7 +14,7 @@ import WeatherUnderground from '../../components/apis/wunderground';
 const aerisData = require('../../fixtures/aeris.json');
 const apixuData = require('../../fixtures/apixu.json');
 const AWS = require("aws-sdk")
-const darkSkyData = require('../../fixtures/darksky.json');
+const darkSkyData = 'Search for a ZIP code!';
 const nwsData = require('../../fixtures/nws-point.json');
 const openWeatherData = require('../../fixtures/openweathermap.json');
 const weatherbitData = require('../../fixtures/weatherbit.json');
@@ -26,6 +26,7 @@ const awsConfig = {
   secretAccessKey: process.env.PREACT_APP_AWS_SECRET_ACCESS_KEY  
 }
 
+/* TODO: need to dynamically populate key with ZIP searched to get the right file */
 const s3Params = {
   Bucket: 'wx-aggregator',
   Key: 'forecastResults.json',
@@ -132,24 +133,28 @@ const apixuDataMassager = (data) => {
 };
 
 const darkSkyDataMassager = (data) => {
-  const forecasts = data['daily']['data'];
-  const payload = [];
+  if (typeof data.daily === 'undefined') {
+    return false;
+  } else {
+    const forecasts = data['daily']['data'];
+    const payload = [];
 
-  for (let i = 0; i < 5; i++) {
-    payload.push({
-      'time': convertUnixTime(forecasts[i]['time']),
-      'descrip': forecasts[i]['summary'],
-      'maxTemp': forecasts[i]['temperatureMax'],
-      'minTemp': forecasts[i]['temperatureMin'],
-      'humidity': Math.round(forecasts[i]['humidity'] * 100),
-      'pop': forecasts[i]['precipProbability'] * 100,
-      'pType': forecasts[i]['precipType'],
-      'windDir': convertWindDir(forecasts[i]['windBearing']),
-      'windSpeed': forecasts[i]['windSpeed']
-    });
+    for (let i = 0; i < 5; i++) {
+      payload.push({
+        'time': convertUnixTime(forecasts[i]['time']),
+        'descrip': forecasts[i]['summary'],
+        'maxTemp': forecasts[i]['temperatureMax'],
+        'minTemp': forecasts[i]['temperatureMin'],
+        'humidity': Math.round(forecasts[i]['humidity'] * 100),
+        'pop': forecasts[i]['precipProbability'] * 100,
+        'pType': forecasts[i]['precipType'],
+        'windDir': convertWindDir(forecasts[i]['windBearing']),
+        'windSpeed': forecasts[i]['windSpeed']
+      });
+    }
+
+    return payload;
   }
-
-  return payload;
 };
 
 const nwsDataMassager = (data) => {
@@ -268,8 +273,8 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    console.log(this.state.nwsDaysForecast);
-    console.log('did this deploy actually work? let\'s find out!');
+    console.log(this.state.darkSkyDaysForecast);
+    console.log('did this work? let\'s find out!');
   }
 
   onSearchSubmit(latLng, zipCode, time) {
