@@ -14,7 +14,7 @@ import WeatherUnderground from '../../components/apis/wunderground';
 const aerisData = require('../../fixtures/aeris.json');
 const apixuData = require('../../fixtures/apixu.json');
 const AWS = require("aws-sdk")
-const darkSkyData = 'Search for a ZIP code!';
+const darkSkyData = '';
 const nwsData = require('../../fixtures/nws-point.json');
 const openWeatherData = require('../../fixtures/openweathermap.json');
 const weatherbitData = require('../../fixtures/weatherbit.json');
@@ -29,7 +29,7 @@ const awsConfig = {
 /* TODO: need to dynamically populate key with ZIP searched to get the right file */
 const s3Params = {
   Bucket: 'wx-aggregator',
-  Key: 'forecastResults.json',
+  Key: 'forecast_data/darksky/11435.json',
 }
 
 const lambda = new AWS.Lambda(awsConfig);
@@ -248,7 +248,7 @@ class Home extends Component {
     super();
     this.state.aerisDaysForecast = aerisDataMassager(aerisData);
     this.state.apixuDaysForecast = apixuDataMassager(apixuData);
-    this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);
+    this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);    
     this.state.nwsDaysForecast = nwsDataMassager(nwsData);
     this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
     this.state.weatherbitDaysForecast = weatherbitDataMassager(weatherbitData);
@@ -260,16 +260,19 @@ class Home extends Component {
     let getObjectPromise = s3.getObject(s3Params).promise();
 
     getObjectPromise.then(function(data) {
-      const output = data.Body.toString();
+      console.log(data)
+
+      const output = JSON.stringify(data.Body);
       const darkSkyPayload = JSON.parse(output);
 
       return darkSkyPayload;
     }).catch(function(err) {
       console.log(err, err.stack);
-    }).then((darkSkyPayload) => {
-      console.log(darkSkyPayload);
+    }).then(function(darkSkyPayload) {
+      // console.log(darkSkyPayload)
       this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
-    });
+      console.log("##### DID THIS EVEN SET THE STATE ", this.state.darkSkyDaysForecast);
+    }.bind(this));
   }
 
   componentDidMount() {
