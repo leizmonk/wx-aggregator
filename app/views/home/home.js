@@ -29,7 +29,7 @@ const awsConfig = {
 /* TODO: need to dynamically populate key with ZIP searched to get the right file */
 const s3Params = {
   Bucket: 'wx-aggregator',
-  Key: 'forecast_data/darksky/11435.json',
+  Key: 'forecast_data/darksky/11435.json'
 }
 
 const lambda = new AWS.Lambda(awsConfig);
@@ -133,7 +133,7 @@ const apixuDataMassager = (data) => {
 };
 
 const darkSkyDataMassager = (data) => {
-  if (typeof data.daily === 'undefined') {
+  if (typeof data.daily === 'undefined' || typeof data === 'undefined') {
     return false;
   } else {
     const forecasts = data['daily']['data'];
@@ -206,7 +206,7 @@ const weatherbitDataMassager = (data) => {
   const forecasts = data['data'];
   const payload = [];
 
-  for (let i =0; i < 5; i++) {
+  for (let i = 0; i < 5; i++) {
     payload.push({
       'time': convertUnixTime(forecasts[i]['ts']),
       'descrip': forecasts[i]['weather']['description'],
@@ -241,6 +241,28 @@ const wundergroundDataMassager = (data) => {
   return payload;
 };
 
+// const getS3Data = (zipCode) => {
+//   let s3Path = 'forecast_data/darksky/' + zipCode + '.json';
+//   let s3Params = {
+//     Bucket: 'wx-aggregator',
+//     Key: s3Path
+//   }
+//   console.log(s3Params);
+//   let getObjectPromise = s3.getObject(s3Params).promise();
+
+//   getObjectPromise.then(function(data) {
+//     const output = JSON.parse(data.Body);
+//     const darkSkyPayload = JSON.parse(output);
+
+//     return darkSkyPayload;
+//   }).catch(function(err) {
+//     console.log(err, err.stack);
+//   }).then(function(darkSkyPayload) {
+//     this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
+//     console.log("##### DID THIS EVEN SET THE STATE ", this.state.darkSkyDaysForecast);
+//   }.bind(this));
+// }
+
 
 // Home component
 class Home extends Component {
@@ -256,20 +278,23 @@ class Home extends Component {
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
   }
 
-  componentWillMount() {
+  componentWillMount(zipCode) {
+    console.log(this.state.zipCode);
+    let s3Path = 'forecast_data/darksky/' + zipCode + '.json';
+    let s3Params = {
+      Bucket: 'wx-aggregator',
+      Key: s3Path
+    }
     let getObjectPromise = s3.getObject(s3Params).promise();
 
     getObjectPromise.then(function(data) {
-      console.log(data)
-
-      const output = JSON.stringify(data.Body);
+      const output = JSON.parse(data.Body);
       const darkSkyPayload = JSON.parse(output);
 
       return darkSkyPayload;
     }).catch(function(err) {
       console.log(err, err.stack);
     }).then(function(darkSkyPayload) {
-      // console.log(darkSkyPayload)
       this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
       console.log("##### DID THIS EVEN SET THE STATE ", this.state.darkSkyDaysForecast);
     }.bind(this));
@@ -300,6 +325,8 @@ class Home extends Component {
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log(data);           // successful response
     });
+
+    // getS3Data(zipCode);
   }
 
   render() {
