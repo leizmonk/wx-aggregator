@@ -83,7 +83,7 @@ const convertWindDir = (degrees) => {
 
 
 // Data massagers for API sources
-const aerisDataMassager = (data) => {
+const aerisDataMapper = (data) => {
   const forecasts = data['response'][0]['periods'];
   const payload = [];
 
@@ -103,7 +103,7 @@ const aerisDataMassager = (data) => {
   return payload;
 };
 
-const apixuDataMassager = (data) => {
+const apixuDataMapper = (data) => {
   const forecasts = data['forecast']['forecastday'];
   const payload = [];
   const pop = [];
@@ -132,32 +132,28 @@ const apixuDataMassager = (data) => {
   return payload;
 };
 
-const darkSkyDataMassager = (data) => {
-  if (typeof data.daily === 'undefined' || typeof data === 'undefined') {
-    return false;
-  } else {
-    const forecasts = data['daily']['data'];
-    const payload = [];
+const darkSkyDataMapper = (data) => {
+  const forecasts = data['daily']['data'];
+  const payload = [];
 
-    for (let i = 0; i < 5; i++) {
-      payload.push({
-        'time': convertUnixTime(forecasts[i]['time']),
-        'descrip': forecasts[i]['summary'],
-        'maxTemp': forecasts[i]['temperatureMax'],
-        'minTemp': forecasts[i]['temperatureMin'],
-        'humidity': Math.round(forecasts[i]['humidity'] * 100),
-        'pop': forecasts[i]['precipProbability'] * 100,
-        'pType': forecasts[i]['precipType'],
-        'windDir': convertWindDir(forecasts[i]['windBearing']),
-        'windSpeed': forecasts[i]['windSpeed']
-      });
-    }
-
-    return payload;
+  for (let i = 0; i < 5; i++) {
+    payload.push({
+      'time': convertUnixTime(forecasts[i]['time']),
+      'descrip': forecasts[i]['summary'],
+      'maxTemp': forecasts[i]['temperatureMax'],
+      'minTemp': forecasts[i]['temperatureMin'],
+      'humidity': Math.round(forecasts[i]['humidity'] * 100),
+      'pop': forecasts[i]['precipProbability'] * 100,
+      'pType': forecasts[i]['precipType'],
+      'windDir': convertWindDir(forecasts[i]['windBearing']),
+      'windSpeed': forecasts[i]['windSpeed']
+    });
   }
+
+  return payload;
 };
 
-const nwsDataMassager = (data) => {
+const nwsDataMapper = (data) => {
   const forecasts = data['properties']['periods'];
   const payload = [];
   const minTemps = [];
@@ -183,7 +179,7 @@ const nwsDataMassager = (data) => {
   return payload;
 };
 
-const openWeatherDataMassager = (data) => {
+const openWeatherDataMapper = (data) => {
   const forecasts = data['list'];
   const payload = [];
 
@@ -202,7 +198,7 @@ const openWeatherDataMassager = (data) => {
   return payload;
 };
 
-const weatherbitDataMassager = (data) => {
+const weatherbitDataMapper = (data) => {
   const forecasts = data['data'];
   const payload = [];
 
@@ -221,7 +217,7 @@ const weatherbitDataMassager = (data) => {
   return payload;
 };
      
-const wundergroundDataMassager = (data) => {
+const wundergroundDataMapper = (data) => {
   const forecasts = data['forecast']['simpleforecast']['forecastday'];
   const payload = [];
 
@@ -241,45 +237,25 @@ const wundergroundDataMassager = (data) => {
   return payload;
 };
 
-// const getS3Data = (zipCode) => {
-//   let s3Path = 'forecast_data/darksky/' + zipCode + '.json';
-//   let s3Params = {
-//     Bucket: 'wx-aggregator',
-//     Key: s3Path
-//   }
-//   console.log(s3Params);
-//   let getObjectPromise = s3.getObject(s3Params).promise();
-
-//   getObjectPromise.then(function(data) {
-//     const output = JSON.parse(data.Body);
-//     const darkSkyPayload = JSON.parse(output);
-
-//     return darkSkyPayload;
-//   }).catch(function(err) {
-//     console.log(err, err.stack);
-//   }).then(function(darkSkyPayload) {
-//     this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
-//     console.log("##### DID THIS EVEN SET THE STATE ", this.state.darkSkyDaysForecast);
-//   }.bind(this));
-// }
-
-
 // Home component
 class Home extends Component {
   constructor() {
     super();
-    this.state.aerisDaysForecast = aerisDataMassager(aerisData);
-    this.state.apixuDaysForecast = apixuDataMassager(apixuData);
-    this.state.darkSkyDaysForecast = darkSkyDataMassager(darkSkyData);    
-    this.state.nwsDaysForecast = nwsDataMassager(nwsData);
-    this.state.openWeatherDaysForecast = openWeatherDataMassager(openWeatherData);
-    this.state.weatherbitDaysForecast = weatherbitDataMassager(weatherbitData);
-    this.state.wundergroundDaysForecast = wundergroundDataMassager(wundergroundData);
+    this.state.aerisDaysForecast = null;
+    this.state.apixuDaysForecast = null;
+    this.state.darkSkyDaysForecast = null;
+    this.state.nwsDaysForecast = null;
+    this.state.openWeatherDaysForecast = null;
+    this.state.weatherbitDaysForecast = null;
+    this.state.wundergroundDaysForecast = null;
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
   }
 
   componentWillMount(zipCode) {
-    console.log(this.state.zipCode);
+
+  }
+
+  componentWillUpdate(zipCode) {
     let s3Path = 'forecast_data/darksky/' + zipCode + '.json';
     let s3Params = {
       Bucket: 'wx-aggregator',
@@ -295,14 +271,14 @@ class Home extends Component {
     }).catch(function(err) {
       console.log(err, err.stack);
     }).then(function(darkSkyPayload) {
-      this.setState({darkSkyDaysForecast: darkSkyDataMassager(darkSkyPayload)});
+      console.log(darkSkyPayload)
+      this.setState({darkSkyDaysForecast: darkSkyDataMapper(darkSkyPayload)});
       console.log("##### DID THIS EVEN SET THE STATE ", this.state.darkSkyDaysForecast);
     }.bind(this));
   }
 
   componentDidMount() {
-    console.log(this.state.darkSkyDaysForecast);
-    console.log('did this work? let\'s find out!');
+    console.log('what is the initial state ', this.state.darkSkyDaysForecast);
   }
 
   onSearchSubmit(latLng, zipCode, time) {
@@ -324,9 +300,7 @@ class Home extends Component {
     lambda.invoke(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log(data);           // successful response
-    });
-
-    // getS3Data(zipCode);
+    });  
   }
 
   render() {

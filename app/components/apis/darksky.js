@@ -4,7 +4,7 @@ import styles from './apis.css';
 
 class DarkSky extends Component {
   render(props) {
-    if (props.daysForecast == false) {
+    if (props.daysForecast === null) {
       return (
         <section class="darkSky">
           <header>
@@ -37,7 +37,7 @@ class DarkSky extends Component {
             </ul>
           </div>
         </section>
-      );
+      )
     }
   }
 }
