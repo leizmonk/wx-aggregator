@@ -3,7 +3,7 @@ import { h, render, Component } from 'preact';
 import styles from './apis.css';
 
 class NationalWeatherService extends Component {
-  render(props){
+  render(props) {
     if (props.daysForecast === null) {
       return (
         <section class="nws">
