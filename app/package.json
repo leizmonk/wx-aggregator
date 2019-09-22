@@ -44,7 +44,7 @@
     "aws-sdk": "^2.409.0",
     "google-maps-react": "^2.0.2",
     "postcss": "^7.0.14",
-    "preact": "^8.2.1",
+    "preact": "^8.5.2",
     "preact-compat": "^3.17.0",
     "preact-router": "^2.6.1",
     "prop-types": "^15.6.2"

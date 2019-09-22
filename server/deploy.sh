@@ -1,17 +1,21 @@
 #! /bin/bash
 
-echo "----- deploy app to s3 bucket -----"
+echo "----- deploying app to s3 bucket -----"
 
 # remove existing app instance
-aws s3 rm s3://wx-aggregator/wx-app --recursive
+echo "----- removing stale app instance -----"
+aws s3 rm s3://wx-aggregator/ --recursive --exclude 'forecast_data/*' --profile "wxaggregator"
 
 # build the app
-cd src
-npm run prod && mv assets/ wx-app/
+echo "----- putting together new production build -----"
+cd ../app
+npm run build --no-prerender && mv build/ wx-aggregator-app/
 
 # sync with s3
-aws s3 sync wx-app/ s3://wx-aggregator/wx-app --acl public-read
-# remove dup app dir
-mv wx-app/ assets/
+echo "----- uploading current build to s3 -----"
+aws s3 sync wx-aggregator-app/ s3://wx-aggregator/ --acl public-read --profile "wxaggregator"
 
-cd ..
+echo "----- clearing local production build artifacts -----"
+# remove dup app dir
+cd ../app
+rm -rf wx-aggregator-app/ && rm -rf build/

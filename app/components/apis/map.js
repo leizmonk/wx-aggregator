@@ -3,12 +3,16 @@ import nyMetroZips from '../../fixtures/zipcodes.json';
 import Map, { GoogleApiWrapper } from 'google-maps-react';
 import styles from './apis.css';
 
+const lambdaInvoke = require('../utils/invoke');
+
 // Construct an array of the ZIPs we can provide forecast data for to validate against
 const zipRange = [];
 
 for (let i in nyMetroZips) {
   zipRange.push(nyMetroZips[i]['zip']);
 }
+
+lambdaInvoke.onLoad();
 
 class MapContainer extends Component {
   constructor(props) {
@@ -25,7 +29,7 @@ class MapContainer extends Component {
   // Wait for map ready and state update to send ZIP
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.google == this.props.google && zipRange.indexOf(this.state.zipCode) > -1) {
-      this.props.onSearchSubmit(this.state.latLng, this.state.zipCode, Date.now());
+      lambdaInvoke.onSearchSubmit(this.state.latLng, this.state.zipCode, Date.now());
     } else if (prevProps.google != this.props.google) {
       console.log('Map loading...');
     } else {
