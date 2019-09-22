@@ -3,6 +3,8 @@ const config = require('./config');
 const lambda = new AWS.Lambda(config.awsConfig);
 const s3 = new AWS.S3(config.awsConfig);
 
+const dataMapper = require('./datamapper');
+
 const self = module.exports = {
   onLoad: () => {
     console.log('loaded invoke');
@@ -25,7 +27,7 @@ const self = module.exports = {
     };
     lambda.invoke(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
+      else     console.log('returned raw data: ', data);           // successful response
     });
 
     let s3Path = 'forecast_data/darksky/' + zipCode + '.json';
@@ -39,12 +41,14 @@ const self = module.exports = {
       const output = JSON.parse(data.Body);
       darkSkyPayload = JSON.parse(output);
 
+      console.log('parsed payload: ', darkSkyPayload);
       return darkSkyPayload;
     }).catch(function(err) {
       console.log(err, err.stack);
     }).then((darkSkyPayload) => {
-      console.log('------- payload ', darkSkyPayload)
-      return darkSkyPayload
+      console.log('calling datamapper from inovke');
+      dataMapper.darkSkyDataMapper(darkSkyPayload);
+      // return darkSkyPayload
     })
   }
 }

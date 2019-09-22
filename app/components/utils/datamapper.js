@@ -27,7 +27,7 @@ const self = module.exports = {
     }
 
     return payload;
-  };
+  },
 
   apixuDataMapper: (data) => {
     const forecasts = data['forecast']['forecastday'];
@@ -56,7 +56,7 @@ const self = module.exports = {
     }
 
     return payload;
-  };
+  },
 
   darkSkyDataMapper: (data) => {
     const forecasts = data['daily']['data'];
@@ -76,8 +76,10 @@ const self = module.exports = {
       });
     }
 
+    console.log('parsed api response: ', payload);
+
     return payload;
-  };
+  },
 
   nwsDataMapper: (data) => {
     const forecasts = data['properties']['periods'];
@@ -103,9 +105,9 @@ const self = module.exports = {
     }
 
     return payload;
-  };
+  },
 
-  const openWeatherDataMapper = (data) => {
+  openWeatherDataMapper: (data) => {
     const forecasts = data['list'];
     const payload = [];
 
@@ -122,7 +124,7 @@ const self = module.exports = {
     }
 
     return payload;
-  };
+  },
 
   weatherbitDataMapper: (data) => {
     const forecasts = data['data'];
@@ -141,7 +143,7 @@ const self = module.exports = {
     }
 
     return payload;
-  };
+  },
        
   wundergroundDataMapper: (data) => {
     const forecasts = data['forecast']['simpleforecast']['forecastday'];

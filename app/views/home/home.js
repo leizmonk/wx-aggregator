@@ -21,7 +21,6 @@ class Home extends Component {
     this.state.openWeatherDaysForecast = null;
     this.state.weatherbitDaysForecast = null;
     this.state.wundergroundDaysForecast = null;
-    this.state.darkSkyPayload = null;
   }
 
   componentDidMount() {
