@@ -25,7 +25,7 @@ const self = module.exports = {
       LogType: 'Tail',
       Payload: JSON.stringify(payload) /* Strings will be Base-64 encoded on your behalf */,
     };
-    lambda.invoke(params, function(err, data) {
+    lambda.invoke(params, (err, data) => {
       if (err) console.log(err, err.stack); // an error occurred
       else     console.log('returned raw data: ', data);           // successful response
     });
@@ -37,18 +37,19 @@ const self = module.exports = {
     }
     const getObjectPromise = s3.getObject(s3Params).promise();
 
-    getObjectPromise.then(function(data) {
+    getObjectPromise.then((data) => {
       const output = JSON.parse(data.Body);
       darkSkyPayload = JSON.parse(output);
 
       console.log('parsed payload: ', darkSkyPayload);
-      return darkSkyPayload;
-    }).catch(function(err) {
-      console.log(err, err.stack);
-    }).then((darkSkyPayload) => {
       console.log('calling datamapper from inovke');
       dataMapper.darkSkyDataMapper(darkSkyPayload);
-      // return darkSkyPayload
+      return data;
+    }).catch((data, e) => {
+      return data;
+    }).then((data) => {
+      console.log(data);
+      console.log('what is the point of this');
     })
   }
 }
