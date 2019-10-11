@@ -1,17 +1,17 @@
-const aerisData = require('../../fixtures/aeris.json');
-const apixuData = require('../../fixtures/apixu.json');
-const darkSkyData = require('../../fixtures/darksky.json');
-const nwsData = require('../../fixtures/nws-point.json');
-const openWeatherData = require('../../fixtures/openweathermap.json');
-const unitConversion = require('./unitconversion');
-const weatherbitData = require('../../fixtures/weatherbit.json');
-const wundergroundData = require('../../fixtures/wunderground.json');
+const aerisData = require('../../fixtures/aeris.json')
+const apixuData = require('../../fixtures/apixu.json')
+const darkSkyData = require('../../fixtures/darksky.json')
+const nwsData = require('../../fixtures/nws-point.json')
+const openWeatherData = require('../../fixtures/openweathermap.json')
+const unitConversion = require('./unitconversion')
+const weatherbitData = require('../../fixtures/weatherbit.json')
+const wundergroundData = require('../../fixtures/wunderground.json')
 
 // Data mappers for JSON returned by APIs
 const self = module.exports = {
   aerisDataMapper: (data) => {
-    const forecasts = data['response'][0]['periods'];
-    const payload = [];
+    const forecasts = data['response'][0]['periods']
+    const payload = []
 
     for (let i = 0; i < 5; i++) {
       payload.push({
@@ -26,17 +26,17 @@ const self = module.exports = {
       });
     }
 
-    return payload;
+    return payload
   },
 
   apixuDataMapper: (data) => {
-    const forecasts = data['forecast']['forecastday'];
-    const payload = [];
-    const pop = [];
-    const windDir = [];  
+    const forecasts = data['forecast']['forecastday']
+    const payload = []
+    const pop = []
+    const windDir = []  
 
     for (let i in forecasts) {
-      const hours = forecasts[i]['hour'];
+      const hours = forecasts[i]['hour']
 
       payload.push({
         'time': unitConversion.convertUnixTime(forecasts[i]['date_epoch']),
@@ -47,20 +47,20 @@ const self = module.exports = {
         'pop': Math.round((pop.reduce((a, b) => a + b, 0) / 24) * 100),
         'windDir': unitConversion.convertWindDir(windDir.reduce((a, b) => a + b, 0) / 24),
         'windSpeed': forecasts[i]['day']['maxwind_mph']
-      });
+      })
 
       for (let i in hours) {
-        pop.push(hours[i]['will_it_rain']);
-        windDir.push(hours[i]['wind_degree']);
+        pop.push(hours[i]['will_it_rain'])
+        windDir.push(hours[i]['wind_degree'])
       }    
     }
 
-    return payload;
+    return payload
   },
 
   darkSkyDataMapper: (data) => {
-    const forecasts = data['daily']['data'];
-    const payload = [];
+    const forecasts = data['daily']['data']
+    const payload = []
 
     for (let i = 0; i < 5; i++) {
       payload.push({
@@ -73,26 +73,26 @@ const self = module.exports = {
         'pType': forecasts[i]['precipType'],
         'windDir': unitConversion.convertWindDir(forecasts[i]['windBearing']),
         'windSpeed': forecasts[i]['windSpeed']
-      });
+      })
     }
 
-    console.log('parsed api response: ', payload);
+    console.log('parsed api response: ', payload)
 
-    return payload;
+    return payload
   },
 
   nwsDataMapper: (data) => {
-    const forecasts = data['properties']['periods'];
-    const payload = [];
-    const minTemps = [];
+    const forecasts = data['properties']['periods']
+    const payload = []
+    const minTemps = []
 
     for (let i = 1; i < 11; i += 2) {
-      minTemps.push(forecasts[i]['temperature']);
+      minTemps.push(forecasts[i]['temperature'])
     }
 
     for (let i = 0; i < 10; i += 2) {
-      const dateString = forecasts[i]['startTime'];
-      const date = unitConversion.convertUnixTime(new Date(dateString.substring(0, dateString.indexOf('T'))).getTime() / 1000);
+      const dateString = forecasts[i]['startTime']
+      const date = unitConversion.convertUnixTime(new Date(dateString.substring(0, dateString.indexOf('T'))).getTime() / 1000)
 
       payload.push({
         'time': date,
@@ -101,15 +101,15 @@ const self = module.exports = {
         'minTemp': minTemps[i/2],
         'windDir': forecasts[i]['windDirection'],
         'windSpeed': forecasts[i]['windSpeed']
-      });
+      })
     }
 
-    return payload;
+    return payload
   },
 
   openWeatherDataMapper: (data) => {
-    const forecasts = data['list'];
-    const payload = [];
+    const forecasts = data['list']
+    const payload = []
 
     for (let i in forecasts) {
       payload.push({
@@ -120,15 +120,15 @@ const self = module.exports = {
         'humidity': Math.round(forecasts[i]['humidity']),
         'windDir': unitConversion.convertWindDir(forecasts[i]['deg']),
         'windSpeed': forecasts[i]['speed']
-      });
+      })
     }
 
-    return payload;
+    return payload
   },
 
   weatherbitDataMapper: (data) => {
-    const forecasts = data['data'];
-    const payload = [];
+    const forecasts = data['data']
+    const payload = []
 
     for (let i = 0; i < 5; i++) {
       payload.push({
@@ -139,15 +139,15 @@ const self = module.exports = {
         'humidity': Math.round(forecasts[i]['rh']),
         'windDir': forecasts[i]['wind_cdir'],
         'windSpeed': forecasts[i]['wind_spd']
-      });
+      })
     }
 
-    return payload;
+    return payload
   },
        
   wundergroundDataMapper: (data) => {
-    const forecasts = data['forecast']['simpleforecast']['forecastday'];
-    const payload = [];
+    const forecasts = data['forecast']['simpleforecast']['forecastday']
+    const payload = []
 
     for (let i = 0; i < 5; i++) {
       payload.push({
@@ -159,9 +159,9 @@ const self = module.exports = {
         'pop': forecasts[i]['pop'],
         'windDir': forecasts[i]['avewind']['dir'],
         'windSpeed': forecasts[i]['avewind']['mph']
-      });
+      })
     }
 
-    return payload;
+    return payload
   }
 }
