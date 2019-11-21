@@ -10,6 +10,8 @@ import OpenWeather from '../../components/apis/openweather';
 import WeatherBit from '../../components/apis/weatherbit';
 import WeatherUnderground from '../../components/apis/wunderground';
 
+const dataMapper = require('../../components/utils/datamapper')
+
 // Home component
 class Home extends Component {
   constructor() {

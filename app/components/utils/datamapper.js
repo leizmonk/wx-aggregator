@@ -77,7 +77,6 @@ const self = module.exports = {
     }
 
     console.log('parsed api response: ', payload)
-
     return payload
   },
 

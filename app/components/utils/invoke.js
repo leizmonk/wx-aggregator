@@ -41,15 +41,14 @@ const self = module.exports = {
       const output = JSON.parse(data.Body)
       darkSkyPayload = JSON.parse(output)
 
+      return data
+    }).catch((err) => {
+      alert('Error retrieving data')
+      console.log(err, err.stack)
+    }).then((data) => {
       console.log('parsed payload: ', darkSkyPayload)
       console.log('calling datamapper from inovke')
       dataMapper.darkSkyDataMapper(darkSkyPayload)
-      return data
-    }).catch((data, e) => {
-      return data
-    }).then((data) => {
-      console.log(data)
-      console.log('what is the point of this')
     })
   }
 }
