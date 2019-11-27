@@ -1,4 +1,5 @@
 import { h, render, Component } from 'preact';
+import { Provider, connect } from 'preact-redux';
 import nyMetroZips from '../fixtures/zipcodes.json';
 import Map, { GoogleApiWrapper } from 'google-maps-react';
 import styles from './map.css';
