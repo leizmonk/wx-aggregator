@@ -1,7 +1,7 @@
 import { h, render, Component } from 'preact';
-import nyMetroZips from '../../fixtures/zipcodes.json';
+import nyMetroZips from '../fixtures/zipcodes.json';
 import Map, { GoogleApiWrapper } from 'google-maps-react';
-import styles from './apis.css';
+import styles from './map.css';
 
 const lambdaInvoke = require('../utils/invoke');
 

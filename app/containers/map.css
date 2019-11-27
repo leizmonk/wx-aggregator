@@ -1,0 +1,7 @@
+.map_container {
+  height: 600px;  
+
+  & div:nth-child(2) {
+    height: 500px !important;
+  }
+}

@@ -1,16 +1,14 @@
 import { h, Component } from 'preact';
-import styles from '../../components/home.css';
+import styles from './home.css';
 
-import Aeris from '../../components/apis/aeris';
-import ApiXU from '../../components/apis/apixu';
-import DarkSky from '../../components/apis/darksky';
-import MapContainer from '../../components/apis/map'
-import NationalWeatherService from '../../components/apis/nwspoint';
-import OpenWeather from '../../components/apis/openweather';
-import WeatherBit from '../../components/apis/weatherbit';
-import WeatherUnderground from '../../components/apis/wunderground';
-
-const dataMapper = require('../../components/utils/datamapper')
+import Aeris from '../forecasts/aeris';
+import ApiXU from '../forecasts/apixu';
+import DarkSky from '../forecasts/darksky';
+import MapContainer from '../../../containers/retrieveForecast'
+import NationalWeatherService from '../forecasts/nwspoint';
+import OpenWeather from '../forecasts/openweather';
+import WeatherBit from '../forecasts/weatherbit';
+import WeatherUnderground from '../forecasts/wunderground';
 
 // Home component
 class Home extends Component {

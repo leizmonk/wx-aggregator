@@ -46,6 +46,7 @@
     "postcss": "^7.0.14",
     "preact": "^8.5.2",
     "preact-compat": "^3.17.0",
+    "preact-redux": "^2.1.0",
     "preact-router": "^2.6.1",
     "prop-types": "^15.6.2"
   }

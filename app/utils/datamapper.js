@@ -1,11 +1,11 @@
-const aerisData = require('../../fixtures/aeris.json')
-const apixuData = require('../../fixtures/apixu.json')
-const darkSkyData = require('../../fixtures/darksky.json')
-const nwsData = require('../../fixtures/nws-point.json')
-const openWeatherData = require('../../fixtures/openweathermap.json')
+const aerisData = require('../fixtures/aeris.json')
+const apixuData = require('../fixtures/apixu.json')
+const darkSkyData = require('../fixtures/darksky.json')
+const nwsData = require('../fixtures/nws-point.json')
+const openWeatherData = require('../fixtures/openweathermap.json')
 const unitConversion = require('./unitconversion')
-const weatherbitData = require('../../fixtures/weatherbit.json')
-const wundergroundData = require('../../fixtures/wunderground.json')
+const weatherbitData = require('../fixtures/weatherbit.json')
+const wundergroundData = require('../fixtures/wunderground.json')
 
 // Data mappers for JSON returned by APIs
 const self = module.exports = {
