@@ -1,10 +1,9 @@
 import { h, render, Component } from 'preact';
 import { Provider, connect } from 'preact-redux';
+import { fetchForecasts } from '../actions/actions';
 import nyMetroZips from '../fixtures/zipcodes.json';
 import Map, { GoogleApiWrapper } from 'google-maps-react';
 import styles from './map.css';
-
-const lambdaInvoke = require('../utils/invoke');
 
 // Construct an array of the ZIPs we can provide forecast data for to validate against
 const zipRange = [];
@@ -30,7 +29,7 @@ class MapContainer extends Component {
   // Wait for map ready and state update to send ZIP
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.google == this.props.google && zipRange.indexOf(this.state.zipCode) > -1) {
-      lambdaInvoke.onSearchSubmit(this.state.latLng, this.state.zipCode, Date.now());
+      dispatch(fetchForecasts(this.state.latLng, this.state.zipCode, Date.now()))
     } else if (prevProps.google != this.props.google) {
       console.log('Map loading...');
     } else {
