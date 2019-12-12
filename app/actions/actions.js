@@ -28,7 +28,7 @@ function receiveForecasts(forecast, json) {
   }
 }
 
-function fetchForecasts(latLng, zipCode, time) {
+export function fetchForecasts(latLng, zipCode, time) {
   console.log(latLng, zipCode, time)
   const payload = {
     latLng: latLng,

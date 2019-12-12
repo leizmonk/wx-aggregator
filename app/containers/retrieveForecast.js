@@ -2,8 +2,8 @@ import { h, render, Component } from 'preact';
 import { Provider, connect } from 'preact-redux';
 import { fetchForecasts } from '../actions/actions';
 import nyMetroZips from '../fixtures/zipcodes.json';
+import styles from '../styles/map.css';
 import Map, { GoogleApiWrapper } from 'google-maps-react';
-import styles from './map.css';
 
 // Construct an array of the ZIPs we can provide forecast data for to validate against
 const zipRange = [];
@@ -11,8 +11,6 @@ const zipRange = [];
 for (let i in nyMetroZips) {
   zipRange.push(nyMetroZips[i]['zip']);
 }
-
-lambdaInvoke.onLoad();
 
 class MapContainer extends Component {
   constructor(props) {
@@ -73,7 +71,7 @@ class MapContainer extends Component {
 
   render(props) {
     return (
-      <section class={styles.map_container}>
+      <section class="map_container">
         <div class="search-form">
           <p>Forecast for {this.state.city}, {this.state.state} {this.state.zipCode}</p>
         </div>

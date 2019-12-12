@@ -1,6 +1,6 @@
 import { h, render, Component } from 'preact';
 
-import styles from './apis.css';
+import styles from '../../../styles/apis.css';
 
 class WeatherUnderground extends Component {
   render(props) {
@@ -22,7 +22,7 @@ class WeatherUnderground extends Component {
             <h1>Weather Underground</h1>
           </header>
           <div>
-            <ul class={styles.forecast_grid}>
+            <ul class="forecast_grid">
             {props.daysForecast.map((forecast) => {
               return <li>
                 <p>{forecast.time}</p>

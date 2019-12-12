@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import styles from './home.css';
+import styles from '../../../styles/home.css';
 
 import Aeris from '../forecasts/aeris';
 import ApiXU from '../forecasts/apixu';
@@ -38,7 +38,7 @@ class Home extends Component {
   render() {
     return (
       <main>
-        <p class={styles.text}>Weather forecast aggregator for the NYC Metro Area</p>
+        <p class="text">Weather forecast aggregator for the NYC Metro Area</p>
         <MapContainer onSearchSubmit={this.onSearchSubmit} />
         <Aeris daysForecast={this.state.aerisDaysForecast} />
         <ApiXU daysForecast={this.state.apixuDaysForecast} />
