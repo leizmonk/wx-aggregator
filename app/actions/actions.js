@@ -1,4 +1,4 @@
-import { Provider, connect } from 'preact-redux';
+import { Provider, connect } from 'react-redux';
 
 const AWS = require("aws-sdk")
 const config = require('../utils/config')

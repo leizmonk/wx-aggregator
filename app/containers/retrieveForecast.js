@@ -1,5 +1,5 @@
 import { h, render, Component } from 'preact';
-import { Provider, connect } from 'preact-redux';
+import { Provider, connect } from 'react-redux';
 import { fetchForecasts } from '../actions/actions';
 import nyMetroZips from '../fixtures/zipcodes.json';
 import styles from '../styles/map.css';
@@ -27,7 +27,7 @@ class MapContainer extends Component {
   // Wait for map ready and state update to send ZIP
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.google == this.props.google && zipRange.indexOf(this.state.zipCode) > -1) {
-      dispatch(fetchForecasts(this.state.latLng, this.state.zipCode, Date.now()))
+      // dispatch(fetchForecasts(this.state.latLng, this.state.zipCode, Date.now()))
     } else if (prevProps.google != this.props.google) {
       console.log('Map loading...');
     } else {
@@ -36,37 +36,46 @@ class MapContainer extends Component {
   }
 
   // Reverse geocode map click target's ZIP
-  onMapClicked(mapProps, map, clickEvent) {
+  async onMapClicked(mapProps, map, clickEvent) {
     const google = this.props.google;
     const geocoder = new google.maps.Geocoder;
     const maps = google.maps;
 
-    let targetLat = clickEvent.latLng.lat();
-    let targetLng = clickEvent.latLng.lng();
+    let targetLat = clickEvent.latLng.lat()
+    let targetLng = clickEvent.latLng.lng()
+    let coordinates;
+    let zipcode;
+    let timestamp = Date.now()
 
-    geocoder.geocode({
+    let result = await geocoder.geocode({
       'latLng': { lat: targetLat, lng: targetLng },
     }, (results, status) => {
       if (status == maps.GeocoderStatus.OK) {
-        const data = results[0].address_components;
+        const data = results[0].address_components
 
         for (let i in data) {
           if (data[i].types[0] == 'locality' || data[i].types[0] == 'neighborhood') {
-            this.setState({city: data[i].long_name});
+            this.setState({city: data[i].long_name})
           }
 
           if (data[i].types[0] == 'administrative_area_level_1') {
-            this.setState({state: data[i].short_name});
+            this.setState({state: data[i].short_name})
           }
 
           if (data[i].types[0] == 'postal_code') {
-            this.setState({zipCode: data[i].long_name});
+            zipCode = data[i].long_name
+            this.setState({zipCode: zipCode})
           }
         }
-
-        this.setState({latLng: targetLat + ',' + targetLng})
       }
-    });
+    })
+
+    coordinates = targetLat + ',' + targetLng
+    this.setState({latLng: coordinates})
+
+    this.props.dispatch(
+      fetchForecasts(coordinates, zipCode, timeStamp)
+    )
   }
 
   render(props) {
